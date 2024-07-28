@@ -90,14 +90,43 @@ router.post("/logout", (req, res) => {
 router.put("/like-comment/:id", async (req, res) => {
   const id = req.params.id;
   try {
+    const comment = await Comment.findById(id);
     const { token } = req.cookies;
     if (!token) {
       res.status(400).send("you are not logged in");
     } else {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
+        if (comment.liked.includes(userDoc.id)) {
+          res.send("you have already liked to this post");
+        }
         const likedComment = await Comment.findByIdAndUpdate(id, {
-          liked: [...liked, userDoc.id],
+          $push: { liked: userDoc.id },
+        });
+        res.status(202).send(likedComment);
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
+
+router.put("/dislike-comment/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const comment = await Comment.findById(id);
+    const { token } = req.cookies;
+    if (!token) {
+      res.status(400).send("you are not logged in");
+    } else {
+      jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
+        if (err) throw err;
+        if (!comment.liked.includes(userDoc.id)) {
+          return;
+        }
+        const likedComment = await Comment.findByIdAndUpdate(id, {
+          $pull: { liked: userDoc.id },
         });
         res.status(202).send(likedComment);
       });
