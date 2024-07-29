@@ -22,35 +22,40 @@ const addNewCar = async (req, res) => {
     } else {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
-        const {
-          ism,
-          telefon,
-          narx,
-          marka,
-          model,
-          yil,
-          probeg,
-          manzil,
-          rang,
-          qoshimchaMalumotlar,
-          rasimlar,
-        } = req.body;
+        try {
+          const {
+            ism,
+            telefon,
+            narx,
+            marka,
+            model,
+            yil,
+            probeg,
+            manzil,
+            rang,
+            qoshimchaMalumotlar,
+            rasimlar,
+          } = req.body;
 
-        const newCar = await Car.create({
-          ism,
-          telefon,
-          narx,
-          marka,
-          model,
-          yil,
-          probeg,
-          manzil,
-          rang,
-          qoshimchaMalumotlar,
-          rasimlar,
-          ega: userDoc.id,
-        });
-        res.status(201).send(newCar);
+          const newCar = await Car.create({
+            ism,
+            telefon,
+            narx,
+            marka,
+            model,
+            yil,
+            probeg,
+            manzil,
+            rang,
+            qoshimchaMalumotlar,
+            rasimlar,
+            ega: userDoc.id,
+          });
+          res.status(201).send(newCar);
+        } catch (err) {
+          console.log(err);
+          res.send(err);
+        }
       });
     }
   } catch (error) {

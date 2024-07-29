@@ -14,3 +14,5 @@ const saveSchema = mongoose.Schema({
 });
 
 const Saves = mongoose.model("saves", saveSchema);
+
+module.exports = Saves;

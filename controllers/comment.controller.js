@@ -39,15 +39,20 @@ const addComment = async (req, res) => {
         if (err) {
           throw err;
         }
-        const { name, rating, comment, liked, brandName } = req.body;
-        const newComment = await Comment.create({
-          name,
-          rating,
-          comment,
-          liked,
-          brandName,
-          writtenBy: userDoc.id,
-        });
+        try {
+          const { name, rating, comment, liked, brandName } = req.body;
+          const newComment = await Comment.create({
+            name,
+            rating,
+            comment,
+            liked,
+            brandName,
+            writtenBy: userDoc.id,
+          });
+        } catch (err) {
+          console.log(err);
+          res.send(err);
+        }
         res.status(201).send(newComment);
       });
     }

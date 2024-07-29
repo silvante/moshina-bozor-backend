@@ -1,5 +1,5 @@
-const Save = require("../models/saves.model");
 const jwt = require("jsonwebtoken");
+const Save = require("../models/saves.model");
 const { jwtSecret } = require("../routes/extraRoutes");
 
 const getUsersSaves = async (req, res) => {
@@ -10,11 +10,16 @@ const getUsersSaves = async (req, res) => {
     } else {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
-        const saves = await Save.find({ user: userDoc.id });
-        if (!saves) {
-          res.status(404).send("user has no comment");
+        try {
+          const saves = await Save.find({ user: userDoc.id }).populate("car");
+          if (!saves) {
+            res.status(404).send("user has no comment");
+          }
+          res.status(200).send(saves);
+        } catch (err) {
+          console.log(err);
+          res.send(err);
         }
-        res.status(200).send(saves);
       });
     }
   } catch (err) {
@@ -32,7 +37,9 @@ const saveCarByID = async (req, res) => {
     } else {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
-        const save = await Save.create({ user: userDoc.id, car: id });
+        const save = await Save.create({ user: userDoc.id, car: id }).populate(
+          "car"
+        );
         res.status(200).send(save);
       });
     }
@@ -45,11 +52,8 @@ const saveCarByID = async (req, res) => {
 const unsaveCarByID = async (req, res) => {
   const id = req.params.id;
   try {
-    const deleted = await Save.findByIdAndDelete(id);
-    if (!deleted) {
-      res.send("save is not defined");
-    }
-    res.send(203).send("delete success!");
+    await Save.findByIdAndDelete(id);
+    res.send("delete success!");
   } catch (err) {
     console.log(err);
     res.send(err);
