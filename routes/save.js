@@ -1,20 +1,18 @@
 const express = require("express");
-const { getUsersSaves } = require("../controllers/saves.control");
+const {
+  getUsersSaves,
+  saveCarByID,
+  unsaveCarByID,
+} = require("../controllers/saves.control");
 const router = express.Router();
 
-// get all users
+// get all user's saves
 router.get("/", getUsersSaves);
 
-// get a user by id
-// router.get("/:id", getUser);
+// create user's save
+router.post("/:id", saveCarByID);
 
-// create user
-// router.post("/", addUser);
-
-// edit user by id
-// router.put("/:id", editUser);
-
-// delete user by id
-// router.delete("/:id", deleteUser);
+// delete save by id
+router.delete("/:id", unsaveCarByID);
 
 module.exports = router;

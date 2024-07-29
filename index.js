@@ -30,6 +30,7 @@ const user = require("./routes/user");
 const car = require("./routes/car");
 const upload = require("./routes/upload");
 const comment = require("./routes/comments");
+const saves = require("./routes/save");
 
 // using routes
 app.use("/", router);
@@ -37,6 +38,7 @@ app.use("/api/users", user);
 app.use("/api/cars", car);
 app.use("/file", upload);
 app.use("/api/comments", comment);
+app.use("/api/saves", saves);
 
 // gridfs
 const conn = mongoose.connection;
@@ -89,7 +91,7 @@ app.get("/", (req, res) => {
 });
 
 // listening a port
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`started to listen port - ${port}`);
 });
