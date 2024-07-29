@@ -79,6 +79,7 @@ app.get("/", (req, res) => {
       users: "/api/users",
       cars: "/api/cars",
       comments: "/api/comments",
+      saves: "/api/saves",
     },
     "AUTH",
     {
@@ -86,6 +87,12 @@ app.get("/", (req, res) => {
       forLogin: "/login",
       forSave: "/profile",
       forLogout: "/logout",
+    },
+    "UPLOAD",
+    {
+      forUploadImages: "/file/upload",
+      forFindingtheimage: "/file/:filename",
+      forDeletingFile: "/file/:filename",
     },
   ]);
 });
