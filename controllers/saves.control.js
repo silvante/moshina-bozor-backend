@@ -37,9 +37,7 @@ const saveCarByID = async (req, res) => {
     } else {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
-        const save = await Save.create({ user: userDoc.id, car: id }).populate(
-          "car"
-        );
+        const save = await Save.create({ user: userDoc.id, car: id });
         res.status(200).send(save);
       });
     }
