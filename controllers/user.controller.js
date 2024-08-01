@@ -49,18 +49,30 @@ const addUser = async (req, res) => {
       mobile,
       telegram,
     } = req.body;
-    const newUser = await User.create({
-      name,
-      username,
-      email,
-      bio,
-      password: bcryptjs.hashSync(password, cyfer),
-      avatar,
-      verificated,
-      mobile,
-      telegram,
-    });
-    return res.status(201).send(newUser);
+
+    console.log(existingEmail);
+    console.log(existingUsername);
+    if (existingEmail.length >= 1) {
+      res.status(404).send("email is already used");
+      return;
+    }
+    if (existingUsername.length >= 1) {
+      res.send("username is already taken");
+      return;
+    } else {
+      const newUser = await User.create({
+        name,
+        username,
+        email,
+        bio,
+        password: bcryptjs.hashSync(password, cyfer),
+        avatar,
+        verificated,
+        mobile,
+        telegram,
+      });
+      return res.status(201).send(newUser);
+    }
   } catch (err) {
     console.log(err);
     res.send(err);

@@ -19,7 +19,7 @@ if (!fs.existsSync(uploadDir)) {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
-    const userDoc = await User.findOne({ email });
+    const userDoc = await User.find({ email: email });
     if (userDoc) {
       const passwordOk = bcryptjs.compareSync(password, userDoc.password);
       if (passwordOk) {
