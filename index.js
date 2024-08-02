@@ -94,6 +94,10 @@ app.get("/", (req, res) => {
       forFindingtheimage: "/file/:filename",
       forDeletingFile: "/file/:filename",
     },
+    "OTP verification",
+    {
+      verify: "/api/user/verifyOTP",
+    },
   ]);
 });
 

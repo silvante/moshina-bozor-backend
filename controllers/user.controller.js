@@ -140,6 +140,7 @@ const deleteUser = async (req, res) => {
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
+  host: "smtp.gmail.com",
   auth: {
     user: process.env.AUTH_EMAIL,
     pass: process.env.AUTH_PASS,
@@ -194,10 +195,53 @@ const sendOTPverification = async ({ _id, email }, res) => {
     console.log(error);
   }
 };
+
+const verifyOTP = async (req, res) => {
+  try {
+    let { userid, otp } = req.body;
+    if (!userid || !otp) {
+      throw Error("empty fileds are not allowed");
+    } else {
+      const userOTP = await OTP.find({ userid });
+      if (userOTP.length <= 0) {
+        throw new Error(
+          "account records does not exsist or account is already firified"
+        );
+      } else {
+        const { expiresAt } = userOTP[0];
+        const hashedOTP = userOTP[0].otp;
+
+        if (expiresAt < Date.now()) {
+          await OTP.deleteMany({ userid });
+          throw new Error("cade has expired. please request again");
+        } else {
+          const validOTP = bcryptjs.compare(otp, hashedOTP);
+
+          if (!validOTP) {
+            throw new Error("Invalid code password chack your inbox");
+          } else {
+            await User.updateOne({ _id: userid }, { verificated: true });
+            await OTP.deleteMany({ userid });
+            res.json({
+              status: "TEKSHIRILDI",
+              message: "sizning emailingiz muafaqiyatli tekshirildi",
+            });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    res.json({
+      status: "QABUL QILINMADI",
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   getUser,
   getUsers,
   addUser,
   editUser,
   deleteUser,
+  verifyOTP,
 };

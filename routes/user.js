@@ -5,6 +5,7 @@ const {
   addUser,
   editUser,
   deleteUser,
+  verifyOTP,
 } = require("../controllers/user.controller");
 const router = express.Router();
 
@@ -22,5 +23,8 @@ router.put("/:id", editUser);
 
 // delete user by id
 router.delete("/:id", deleteUser);
+
+// verify otp
+router.post("/verifyOTP", verifyOTP);
 
 module.exports = router;
