@@ -237,6 +237,24 @@ const verifyOTP = async (req, res) => {
     });
   }
 };
+
+const resendOTP = async (req, res) => {
+  try {
+    let { userid, email } = req.body;
+
+    if (!userid || !email) {
+      throw Error("empty fileds are not allowed");
+    } else {
+      await OTP.deleteMany({ userid });
+      sendOTPverification({ _id: userid, email }, res);
+    }
+  } catch (err) {
+    res.json({
+      status: "QABUL QILINMADI",
+      message: err.message,
+    });
+  }
+};
 module.exports = {
   getUser,
   getUsers,
@@ -244,4 +262,5 @@ module.exports = {
   editUser,
   deleteUser,
   verifyOTP,
+  resendOTP,
 };

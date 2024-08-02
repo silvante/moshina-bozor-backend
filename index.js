@@ -96,7 +96,8 @@ app.get("/", (req, res) => {
     },
     "OTP verification",
     {
-      verify: "/api/user/verifyOTP",
+      verify: "/api/users/verifyOTP",
+      resend: "/api/users/resendOTP",
     },
   ]);
 });
