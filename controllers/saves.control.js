@@ -4,7 +4,7 @@ const { jwtSecret } = require("../routes/extraRoutes");
 
 const getUsersSaves = async (req, res) => {
   try {
-    const { token } = req.cookies;
+    const token = req.header("Authorization").replace("Bearer ", "");
     if (!token) {
       res.send("login first...");
     } else {
@@ -31,7 +31,7 @@ const getUsersSaves = async (req, res) => {
 const saveCarByID = async (req, res) => {
   const id = req.params.id;
   try {
-    const { token } = req.cookies;
+    const token = req.header("Authorization").replace("Bearer ", "");
     if (!token) {
       res.send("login first...");
     } else {

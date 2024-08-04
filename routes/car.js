@@ -8,7 +8,7 @@ const {
   updateCar,
 } = require("../controllers/car_controller");
 
-// Yangi mashina qo'shish
+// Yangi mashina qo'shish`1
 router.get("/", getAllCar);
 router.get("/:id", getCar);
 router.post("/", addNewCar);

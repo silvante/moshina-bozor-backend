@@ -15,7 +15,7 @@ const getAllCar = async (req, res) => {
 };
 
 const addNewCar = async (req, res) => {
-  const { token } = req.cookies;
+  const token = req.header("Authorization").replace("Bearer ", "");
   try {
     if (!token) {
       res.status(404).send("you are not loged in");

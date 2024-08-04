@@ -18,34 +18,27 @@ if (!fs.existsSync(uploadDir)) {
 // login part codes
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  try {
-    const userDoc = await User.find({ email: email });
-    if (userDoc) {
-      const passwordOk = bcryptjs.compareSync(password, userDoc.password);
-      if (passwordOk) {
-        jwt.sign(
-          { email: userDoc.email, id: userDoc._id },
-          jwtSecret,
-          {},
-          (err, token) => {
-            if (err) throw err;
-            res.cookie("token", token).json(userDoc);
-          }
-        );
-      } else {
-        res.status(422).json("password is not ok");
-      }
-    } else res.json("not found");
-  } catch (err) {
-    res.send(err);
-    console.log(err);
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(400).send("User not found");
   }
+
+  const isMatch = await bcryptjs.compare(password, user.password);
+
+  if (!isMatch) {
+    return res.status(400).send("Invalid credentials");
+  }
+
+  const token = jwt.sign({ id: user._id, email: user.email }, secretKey, {});
+
+  res.json(token);
 });
 
 // profile part codes
 router.get("/profile", async (req, res) => {
   try {
-    const { token } = req.cookies;
+    const token = req.header("Authorization").replace("Bearer ", "");
     if (token) {
       jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
         if (err) throw err;
@@ -91,7 +84,7 @@ router.put("/like-comment/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const comment = await Comment.findById(id);
-    const { token } = req.cookies;
+    const token = req.header("Authorization").replace("Bearer ", "");
     if (!token) {
       res.status(400).send("you are not logged in");
     } else {
@@ -116,7 +109,7 @@ router.put("/dislike-comment/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const comment = await Comment.findById(id);
-    const { token } = req.cookies;
+    const token = req.header("Authorization").replace("Bearer ", "");
     if (!token) {
       res.status(400).send("you are not logged in");
     } else {
