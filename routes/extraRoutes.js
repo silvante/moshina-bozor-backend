@@ -10,11 +10,6 @@ const User = require("../models/user.model");
 const Comment = require("../models/comments.model");
 const jwtSecret = "moshina_bozor_d34DJ058jsllass345dd";
 
-const uploadDir = path.join("..", "/uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
 // login part codes
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;

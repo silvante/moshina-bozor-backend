@@ -16,7 +16,7 @@ const getComments = async (req, res) => {
 };
 
 const getComment = async (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   try {
     const comment = await Comment.find({ _id: id });
     if (!comment) {

@@ -24,16 +24,18 @@ const getUsers = async (req, res) => {
 // mothod: get
 // get a user
 const getUser = async (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
+  console.log(id);
+
   try {
-    const user = await User.find({ _id: id });
+    const user = await User.findById(id);
     if (!user) {
-      res.status(404).send("user is not defined");
+      return res.status(404).send("User not found");
     }
     return res.status(200).send(user);
   } catch (err) {
-    console.log(err);
-    res.status(err);
+    console.error(err);
+    return res.status(500).send("Server error");
   }
 };
 
