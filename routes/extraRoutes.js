@@ -19,15 +19,19 @@ router.post("/login", async (req, res) => {
     return res.status(400).send("User not found");
   }
 
+  if (user.verificated !== true) {
+    res.status(400).send("your account is not verified");
+  }
+
   const isMatch = await bcryptjs.compare(password, user.password);
 
   if (!isMatch) {
     return res.status(400).send("Invalid credentials");
   }
 
-  const token = jwt.sign({ id: user._id, email: user.email }, secretKey, {});
+  const token = jwt.sign({ id: user._id, email: user.email }, jwtSecret, {});
 
-  res.json(token);
+  res.send(token);
 });
 
 // profile part codes
@@ -35,31 +39,36 @@ router.get("/profile", async (req, res) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     if (token) {
-      jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
-        if (err) throw err;
-        const {
-          _id,
-          email,
-          username,
-          name,
-          mobile,
-          telegram,
-          bio,
-          avatar,
-          verificated,
-        } = await User.findById(userDoc.id);
-        res.json({
-          _id,
-          email,
-          username,
-          name,
-          mobile,
-          telegram,
-          bio,
-          avatar,
-          verificated,
+      try {
+        jwt.verify(token, jwtSecret, {}, async (err, userDoc) => {
+          if (err) throw err;
+          const {
+            _id,
+            email,
+            username,
+            name,
+            mobile,
+            telegram,
+            bio,
+            avatar,
+            verificated,
+          } = await User.findById(userDoc.id);
+          res.json({
+            _id,
+            email,
+            username,
+            name,
+            mobile,
+            telegram,
+            bio,
+            avatar,
+            verificated,
+          });
         });
-      });
+      } catch (error) {
+        console.log(err);
+        res.send(err);
+      }
     } else {
       res.json(null);
     }
