@@ -202,12 +202,12 @@ const verifyOTP = async (req, res) => {
   try {
     let { userid, otp } = req.body;
     if (!userid || !otp) {
-      throw Error("empty fileds are not allowed");
+      throw new Error("Bo'sh maydonlarga ruxsat berilmaydi");
     } else {
       const userOTP = await OTP.find({ userid });
       if (userOTP.length <= 0) {
         throw new Error(
-          "account records does not exsist or account is already firified"
+          "Hisob qaydlari mavjud emas yoki hisob allaqachon tasdiqlangan"
         );
       } else {
         const { expiresAt } = userOTP[0];
@@ -215,18 +215,18 @@ const verifyOTP = async (req, res) => {
 
         if (expiresAt < Date.now()) {
           await OTP.deleteMany({ userid });
-          throw new Error("cade has expired. please request again");
+          throw new Error("Kod muddati o'tgan. Iltimos, qayta so'rang");
         } else {
-          const validOTP = bcryptjs.compare(otp, hashedOTP);
+          const validOTP = await bcryptjs.compare(otp, hashedOTP); // `await` qo'shildi
 
           if (!validOTP) {
-            throw new Error("Invalid code password chack your inbox");
+            throw new Error("Noto'g'ri kod, pochta qutingizni tekshiring");
           } else {
             await User.updateOne({ _id: userid }, { verificated: true });
             await OTP.deleteMany({ userid });
             res.json({
               status: "TEKSHIRILDI",
-              message: "sizning emailingiz muafaqiyatli tekshirildi",
+              message: "Sizning emailingiz muvaffaqiyatli tekshirildi",
             });
           }
         }

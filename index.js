@@ -5,6 +5,8 @@ const cors = require("cors");
 const cp = require("cookie-parser");
 const Grid = require("gridfs-stream");
 const mongoose = require("mongoose");
+const swaggerDocs = require("./swagger");
+const swaggerUI = require("swagger-ui-express");
 
 // gridfs
 
@@ -23,6 +25,10 @@ app.use(
   })
 );
 app.use(cp());
+
+// swagger
+
+app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // requiring routes
 const { router } = require("./routes/extraRoutes");
