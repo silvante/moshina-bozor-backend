@@ -17,13 +17,6 @@ const router = express.Router();
  *     description: API operations related to users
  */
 
-/**
- * @swagger
- * tags:
- *   - name: AUTH
- *     description: API operations of auth
- */
-
 // get all users
 router.get("/", getUsers);
 /**
@@ -173,7 +166,7 @@ router.post("/verifyOTP", verifyOTP);
  * @swagger
  * /api/users/verifyOTP:
  *   post:
- *     tags: [AUTH]
+ *     tags: [Authentication]
  *     summary: Verify OTP
  *     requestBody:
  *       required: true
@@ -203,7 +196,7 @@ router.post("/resendOTP", resendOTP);
  * @swagger
  * /api/users/resendOTP:
  *   post:
- *     tags: [AUTH]
+ *     tags: [Authentication]
  *     summary: Resend OTP
  *     requestBody:
  *       required: true
@@ -253,6 +246,25 @@ router.post("/resendOTP", resendOTP);
  *         - username
  *         - email
  *         - password
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Save:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the save
+ *         car:
+ *           $ref: '#/components/schemas/Car'
+ *         user:
+ *           $ref: '#/components/schemas/User'
+ *       required:
+ *         - car
+ *         - user
  */
 
 module.exports = router;

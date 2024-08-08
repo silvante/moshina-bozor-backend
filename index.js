@@ -64,6 +64,38 @@ app.get("/file/:filename", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /file/{filename}:
+ *   get:
+ *     tags: [File Management]
+ *     summary: Retrieve a file by filename
+ *     parameters:
+ *       - name: filename
+ *         in: path
+ *         required: true
+ *         description: The name of the file to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: File retrieved successfully
+ *         content:
+ *           application/octet-stream:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: File not found
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Not found"
+ *       500:
+ *         description: Server error
+ */
+
 app.delete("/file/:filename", async (req, res) => {
   try {
     await gfs.files.deleteOne({ filename: req.params.filename });
@@ -73,6 +105,43 @@ app.delete("/file/:filename", async (req, res) => {
     res.send("An error occured.");
   }
 });
+
+/**
+ * @swagger
+ * /file/{filename}:
+ *   delete:
+ *     tags: [File Management]
+ *     summary: Delete a file by filename
+ *     parameters:
+ *       - name: filename
+ *         in: path
+ *         required: true
+ *         description: The name of the file to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: File deleted successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Success"
+ *       404:
+ *         description: File not found
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "File not found"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "An error occurred."
+ */
 
 // main route
 app.get("/", (req, res) => {

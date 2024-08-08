@@ -14,11 +14,11 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:8080", // Replace with your server URL
+        url: `${process.env.HOST}`, // Replace with your server URL
       },
     ],
   },
-  apis: ["./routes/*.js"], // Path to your API routes
+  apis: ["./routes/*.js", "./index.js"], // Path to your API routes
 };
 
 const swaggerDocs = swaggerJSdoc(swaggerOptions);
