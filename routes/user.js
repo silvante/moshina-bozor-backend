@@ -17,7 +17,6 @@ const router = express.Router();
  *     description: API operations related to users
  */
 
-
 // get all users
 router.get("/", getUsers);
 /**
