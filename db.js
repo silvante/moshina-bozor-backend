@@ -9,3 +9,4 @@ module.exports = function connection() {
     console.log("could not connect to database");
   }
 };
+// exporting
