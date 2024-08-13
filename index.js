@@ -7,6 +7,17 @@ const Grid = require("gridfs-stream");
 const mongoose = require("mongoose");
 const swaggerDocs = require("./swagger");
 const swaggerUI = require("swagger-ui-express");
+const rateLimit = require("express-rate-limit");
+
+// protecting
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+});
+
+const ipfilter = require("express-ipfilter").IpFilter;
+const ips = ["127.0.0.1"];
 
 // gridfs
 
@@ -17,6 +28,12 @@ connectdb();
 
 // extra functions
 const app = express();
+
+// protecting uses
+
+app.use(limiter);
+app.use(ipfilter(ips, { mode: "allow" }));
+
 app.use(express.json());
 app.use(
   cors({
