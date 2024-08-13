@@ -17,7 +17,7 @@ const limiter = rateLimit({
 });
 
 const ipfilter = require("express-ipfilter").IpFilter;
-const ips = ["127.0.0.1"];
+const ips = ["::1", "127.0.0.1"];
 
 // gridfs
 

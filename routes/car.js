@@ -195,4 +195,14 @@ router.delete("/:id", deleteCar);
  *         - ega
  */
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     apiKeyAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
+ */
+
 module.exports = router;
