@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Saves = require("./saves.model");
 
 const carSchema = Schema({
   ism: {
@@ -48,6 +49,16 @@ const carSchema = Schema({
     ref: "user",
     required: true,
   },
+});
+
+carSchema.pre("remove", async function (next) {
+  try {
+    const car = this._id;
+
+    await Saves.deleteMany({ car });
+  } catch (error) {
+    next(error);
+  }
 });
 
 const Car = mongoose.model("car", carSchema);

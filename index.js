@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const swaggerDocs = require("./swagger");
 const swaggerUI = require("swagger-ui-express");
 const rateLimit = require("express-rate-limit");
+const logger = require("./middleware/logger");
+const morgan = require("morgan");
 
 // protecting
 
@@ -16,8 +18,8 @@ const limiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
 });
 
-const ipfilter = require("express-ipfilter").IpFilter;
-const ips = ["::1", "127.0.0.1"];
+// const ipfilter = require("express-ipfilter").IpFilter;
+// const ips = ["::1", "127.0.0.1", "::ffff:127.0.0.1"];
 
 // gridfs
 
@@ -29,10 +31,21 @@ connectdb();
 // extra functions
 const app = express();
 
+const morganFormat =
+  ":method :url :status :res[content-length] #---------# :response-time ms";
+
+app.use(
+  morgan(morganFormat, {
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+);
+
 // protecting uses
 
 app.use(limiter);
-app.use(ipfilter(ips, { mode: "allow" }));
+// app.use(ipfilter(ips, { mode: "allow" }));
 
 app.use(express.json());
 app.use(
@@ -54,6 +67,7 @@ const car = require("./routes/car");
 const upload = require("./routes/upload");
 const comment = require("./routes/comments");
 const saves = require("./routes/save");
+const { stream } = require("winston");
 
 // using routes
 app.use("/", router);
