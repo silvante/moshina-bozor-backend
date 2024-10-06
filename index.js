@@ -48,12 +48,21 @@ app.use(limiter);
 // app.use(ipfilter(ips, { mode: "allow" }));
 
 app.use(express.json());
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.DOMAIN,
-  })
-);
+const allowedOrigins = [process.env.DOMAIN, process.env.SWAGGER_DOMAIN];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+// Enable CORS with the specified options
+app.use(cors(corsOptions));
 app.use(cp());
 
 // swagger
